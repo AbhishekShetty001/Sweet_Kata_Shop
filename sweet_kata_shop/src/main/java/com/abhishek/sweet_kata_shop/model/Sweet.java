@@ -1,10 +1,12 @@
-package com.abhishek.sweet_kata_shop;
+package com.abhishek.sweet_kata_shop.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -20,13 +22,13 @@ public class Sweet {
     private String name;
 
     @Column(nullable = false, length = 60)
-    private String category; // e.g., Bengali, DryFruit, Bakery
+    private String category;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
     @Column(nullable = false)
-    private Integer quantity; // current stock
+    private Integer quantity;
 
-   
+
 }
