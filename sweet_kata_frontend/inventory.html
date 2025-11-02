@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inventory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <h2>Inventory</h2>
+    <div class="panel">
+      <nav>
+        <a href="index.html">Auth</a>
+        <a href="sweets.html">Sweets</a>
+      </nav>
+    </div>
+
+    <div class="card">
+      <h3>Adjust Stock</h3>
+      <input id="inv-id" placeholder="sweet id">
+      <input id="inv-qty" type="number" placeholder="quantity">
+      <div class="actions">
+        <button id="btn-purchase">Purchase</button>
+        <button id="btn-restock">Restock</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Result</h3>
+      <pre id="out" style="white-space:pre-wrap;"></pre>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const out = $('out');
+
+    $('btn-purchase').onclick = async () => {
+      try {
+        const id = $('inv-id').value;
+        const qty = parseInt($('inv-qty').value, 10);
+        const resp = await api.apiFetch(`/api/inventory/${id}/purchase`, {
+          method: 'POST', body: JSON.stringify({ quantity: qty })
+        });
+        out.textContent = JSON.stringify(resp, null, 2);
+      } catch (e) { out.textContent = e.message; }
+    };
+
+    $('btn-restock').onclick = async () => {
+      try {
+        const id = $('inv-id').value;
+        const qty = parseInt($('inv-qty').value, 10);
+        const resp = await api.apiFetch(`/api/inventory/${id}/restock`, {
+          method: 'POST', body: JSON.stringify({ quantity: qty })
+        });
+        out.textContent = JSON.stringify(resp, null, 2);
+      } catch (e) { out.textContent = e.message; }
+    };
+  </script>
+</body>
+</html>

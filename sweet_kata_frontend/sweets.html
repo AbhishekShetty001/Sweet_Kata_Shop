@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sweets</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <h2>Sweets</h2>
+    <div class="panel">
+      <nav>
+        <a href="index.html">Auth</a>
+        <a href="inventory.html">Inventory</a>
+      </nav>
+    </div>
+
+    <div class="card">
+      <h3>Filters</h3>
+      <input id="f-category" placeholder="category (DryFruit, Traditional...)">
+      <input id="f-min" type="number" step="0.01" placeholder="min price">
+      <input id="f-max" type="number" step="0.01" placeholder="max price">
+      <button id="btn-load">Load</button>
+    </div>
+
+    <div class="card">
+      <h3>Create / Update / Delete</h3>
+      <input id="e-id" placeholder="id (for update/delete)">
+      <input id="e-name" placeholder="name">
+      <input id="e-category" placeholder="category">
+      <input id="e-price" type="number" step="0.01" placeholder="price">
+      <input id="e-qty" type="number" placeholder="quantity">
+      <div class="actions">
+        <button id="btn-create">Create</button>
+        <button id="btn-update">Update</button>
+        <button id="btn-delete" style="background:#d63031">Delete</button>
+      </div>
+    </div>
+
+    <table id="grid">
+      <thead><tr><th>Id</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    const grid = document.querySelector('#grid tbody');
+    const $ = (id) => document.getElementById(id);
+
+    function fillRow(s) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${s.id}</td><td>${s.name}</td><td>${s.category}</td><td>${s.price}</td><td>${s.quantity}</td>`;
+      tr.onclick = () => {
+        $('e-id').value = s.id;
+        $('e-name').value = s.name;
+        $('e-category').value = s.category;
+        $('e-price').value = s.price;
+        $('e-qty').value = s.quantity;
+      };
+      return tr;
+    }
+
+    async function load() {
+      const params = new URLSearchParams();
+      const c = $('f-category').value.trim();
+      const min = $('f-min').value;
+      const max = $('f-max').value;
+      if (c) params.append('category', c);
+      if (min) params.append('minPrice', min);
+      if (max) params.append('maxPrice', max);
+      const data = await api.apiFetch('/api/sweets' + (params.toString() ? '?' + params : ''));
+      grid.innerHTML = '';
+      data.forEach(s => grid.appendChild(fillRow(s)));
+    }
+
+    async function createSweet() {
+      const payload = {
+        name: $('e-name').value.trim(),
+        category: $('e-category').value.trim(),
+        price: parseFloat($('e-price').value),
+        quantity: parseInt($('e-qty').value, 10)
+      };
+      await api.apiFetch('/api/sweets', { method: 'POST', body: JSON.stringify(payload) });
+      load();
+    }
+
+    async function updateSweet() {
+      const id = $('e-id').value;
+      const payload = {
+        name: $('e-name').value.trim(),
+        category: $('e-category').value.trim(),
+        price: parseFloat($('e-price').value),
+        quantity: parseInt($('e-qty').value, 10)
+      };
+      await api.apiFetch('/api/sweets/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+      load();
+    }
+
+    async function deleteSweet() {
+      const id = $('e-id').value;
+      await api.apiFetch('/api/sweets/' + id, { method: 'DELETE' });
+      load();
+    }
+
+    $('btn-load').onclick = load;
+    $('btn-create').onclick = createSweet;
+    $('btn-update').onclick = updateSweet;
+    $('btn-delete').onclick = deleteSweet;
+
+    load();
+  </script>
+</body>
+</html>

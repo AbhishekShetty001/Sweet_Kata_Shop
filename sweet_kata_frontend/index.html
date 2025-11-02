@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sweet Shop | Auth</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Sweet Shop</h1>
+
+    <div class="card">
+      <h2>Login</h2>
+      <input id="login-user" placeholder="username or email">
+      <input id="login-pass" type="password" placeholder="password">
+      <div class="actions">
+        <button id="btn-login">Login</button>
+        <button id="btn-logout" style="background:#d63031">Logout</button>
+      </div>
+      <!-- <small class="muted">Token is stored in localStorage and attached automatically to requests.</small> -->
+    </div>
+
+    <div class="card">
+      <h2>Register</h2>
+      <input id="reg-user" placeholder="username">
+      <input id="reg-email" placeholder="email">
+      <input id="reg-pass" type="password" placeholder="password">
+      <button id="btn-register">Register</button>
+    </div>
+
+    <div class="panel">
+      <nav>
+        <a href="sweets.html">Sweets</a>
+        <a href="inventory.html">Inventory</a>
+      </nav>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    $('btn-login').onclick = async () => {
+      const payload = {
+        usernameOrEmail: $('login-user').value.trim(),
+        password: $('login-pass').value
+      };
+      try {
+        const data = await api.apiFetch('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const token = data.token || data.access_token || data.Token;
+        if (!token) throw new Error('Token missing in response');
+        api.setToken(token);
+        alert('Logged in');
+      } catch (e) { alert(e.message); }
+    };
+
+    $('btn-register').onclick = async () => {
+      const payload = {
+        username: $('reg-user').value.trim(),
+        email: $('reg-email').value.trim(),
+        password: $('reg-pass').value
+      };
+      try {
+        await api.apiFetch('/api/auth/register', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        alert('Registered. You can login now.');
+      } catch (e) { alert(e.message); }
+    };
+
+    $('btn-logout').onclick = () => {
+      api.clearToken();
+      alert('Logged out');
+    };
+  </script>
+</body>
+</html>

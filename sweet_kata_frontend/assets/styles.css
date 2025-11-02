@@ -1,0 +1,16 @@
+:root { --bg:#fafafa; --card:#fff; --text:#222; --muted:#666; --border:#e9e9e9; --accent:#6c5ce7; }
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+       margin: 24px; background: var(--bg); color: var(--text); }
+h1, h2 { margin: 8px 0 16px; }
+.card, .panel { background: var(--card); padding: 16px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.06); margin-bottom: 16px; }
+input, button { padding: 10px 12px; margin: 6px 4px; border-radius: 8px; border: 1px solid var(--border); }
+button { background: var(--accent); color: white; border: none; cursor: pointer; }
+button:hover { filter: brightness(0.95); }
+nav a { margin-right: 12px; color: var(--accent); text-decoration: none; }
+table { width: 100%; background: var(--card); border-collapse: collapse; border-radius: 8px; overflow: hidden; }
+th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+tr:hover { background: #f7f7ff; }
+small.muted { color: var(--muted); }
+.wrap { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 980px; margin: auto; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
